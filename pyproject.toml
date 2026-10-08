@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prevent"
+version = "0.1.0"
+description = "The layer after the model: run any output years forward and keep the best futures."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Hamdi Ben Jarrar"}]
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["forecasting", "scenario", "llm", "agents", "planning", "ollama"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
+
+[project.scripts]
+prevent = "prevent.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/hamdibenjarrar/prevent"
+
+[tool.setuptools.packages.find]
+include = ["prevent*"]
+
+[tool.ruff]
+line-length = 140
