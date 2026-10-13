@@ -73,8 +73,7 @@ Keys are read from the environment only and never printed.
 
 ## Use it inside an agent
 
-Prevent was built as a layer for [Alpha](https://github.com/hamdibenjarrar/alpha-os), a personal AI
-operating system. Alpha runs Prevent on its own plans before it ships a week of work, and the best
+Prevent was built as a layer for Alpha, a personal AI operating system (private for now). Alpha runs Prevent on its own plans before it ships a week of work, and the best
 future becomes the plan. Drop it after any model call the same way:
 
 ```python
@@ -82,6 +81,40 @@ plan = your_model(prompt)
 futures = Engine(your_model_adapter).run(plan, years=8, keep=8)
 best = futures.futures[0]
 act_on(best.moves_now)
+```
+
+## Let an agent be the model
+
+New in 0.2.0. An agent such as Claude, Alpha or a human analyst writes every branch and every score into one
+JSON file. Prevent's engine then does the beam search, the geometric mean ranking and the final cut, exactly as
+it does with a live model. The agent brings judgment. The engine brings arithmetic that cannot be talked into a
+better ranking. No model download, no key, no network.
+
+```bash
+prevent --template > tree.json      # a starting tree
+prevent --tree tree.json --keep 3   # rank it
+```
+
+```json
+{
+  "state": "What is true today, and the decision on the table.",
+  "nodes": [
+    {"id": "a", "parent": null, "text": "A good outcome one year later.", "plausibility": 0.6, "value": 0.8, "reversibility": 0.7, "risk": 0.3},
+    {"id": "c", "parent": null, "text": "A bad outcome one year later.", "plausibility": 0.4, "value": 0.2, "reversibility": 0.4, "risk": 0.7},
+    {"id": "a1", "parent": "a", "text": "What follows from a, two years later.", "plausibility": 0.5, "value": 0.8, "reversibility": 0.8, "risk": 0.2,
+     "summary": "One sentence naming this future", "assumptions": ["what must hold"], "moves_now": ["action this month"]}
+  ]
+}
+```
+
+`check_tree` refuses broken trees and warns when a tree flatters itself: a parent with only one branch, or a
+set of branches with no bad outcome. Write the scores before you look at any ranking, or the ranking is just
+your hopes read back to you.
+
+```python
+from prevent import run_tree
+res = run_tree(tree, keep=3)
+print(res.to_markdown())
 ```
 
 ## Honest scope
