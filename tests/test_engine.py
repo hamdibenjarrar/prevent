@@ -1,7 +1,7 @@
 import json
 from datetime import date
 
-from prevent import Engine, ScriptedModel, score_node, Node
+from prevent import Engine, Node, ScriptedModel, score_node
 
 
 def scripted():
